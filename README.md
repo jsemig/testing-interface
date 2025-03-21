@@ -1,4 +1,4 @@
-# Chat Application with FastAPI, MongoDB, and React
+# World's Shortest Hackathon at GTC 
 
 This is a full-stack chat application that consists of:
 - MongoDB database for storing conversations
