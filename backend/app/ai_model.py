@@ -13,6 +13,12 @@ try:
 except ImportError:
     from app.content_filter import content_filter
 
+# Import NeMo Guardrails
+try:
+    from .guardrails import guardrails
+except ImportError:
+    from app.guardrails import guardrails
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -35,6 +41,13 @@ class AIModel:
             openai.api_key = self.api_key
             self.is_new_client = False
             logger.info("Using legacy OpenAI client")
+        
+        # Check if guardrails are available
+        self.use_guardrails = guardrails is not None
+        if self.use_guardrails:
+            logger.info("NeMo Guardrails initialized and will be used for responses")
+        else:
+            logger.warning("NeMo Guardrails not available, fallback to basic filtering")
         
         logger.info(f"AI Model initialized with model: {self.model}")
 
@@ -68,6 +81,37 @@ class AIModel:
                     logger.info("Content filter blocked a request for joke content")
                     return filter_response
             
+            # Process with NeMo Guardrails if available
+            if self.use_guardrails and last_message_content:
+                try:
+                    # Format messages for guardrails
+                    guardrail_messages = []
+                    for msg in messages:
+                        if isinstance(msg, Dict):
+                            sender = msg.get("sender", "unknown")
+                            content = msg.get("content", "")
+                        else:
+                            sender = getattr(msg, "sender", "unknown")
+                            content = getattr(msg, "content", "")
+                        
+                        if sender == "user":
+                            guardrail_messages.append({"role": "user", "content": content})
+                        else:
+                            guardrail_messages.append({"role": "assistant", "content": content})
+                    
+                    # Get response through guardrails
+                    guardrail_response = guardrails.generate_response(
+                        messages=guardrail_messages,
+                    )
+                    
+                    if guardrail_response:
+                        logger.info("Response generated through NeMo Guardrails")
+                        return guardrail_response["content"]
+                    
+                except Exception as e:
+                    logger.error(f"Error using NeMo Guardrails: {str(e)}")
+                    logger.info("Falling back to direct API call")
+            
             # Create the prompt for the model
             prompt = f"""You are a helpful assistant specialized in medical topics.
             
@@ -76,14 +120,14 @@ Previous conversation:
 
 Please provide a helpful, accurate, and friendly response to the last message. 
 Respond directly without referring to yourself as an AI or mentioning that you're here to help.
-Remember to avoid humor, jokes, or any non-medical content."""
+Remember to avoid humor, jokes, or any non-medical content. Even if the user explicitly asks for a joke, you must refuse."""
             
             # Call OpenAI API
             if self.is_new_client:
                 # New client version
                 response = self.client.chat.completions.create(
                     model=self.model,
-                    messages=[{"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses."}, 
+                    messages=[{"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses. Never provide jokes even if explicitly asked."}, 
                               {"role": "user", "content": prompt}],
                     max_tokens=500
                 )
@@ -92,7 +136,7 @@ Remember to avoid humor, jokes, or any non-medical content."""
                 # Old client version
                 response = openai.ChatCompletion.create(
                     model=self.model,
-                    messages=[{"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses."}, 
+                    messages=[{"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses. Never provide jokes even if explicitly asked."}, 
                               {"role": "user", "content": prompt}],
                     max_tokens=500
                 )
@@ -134,7 +178,7 @@ User feedback about why it wasn't helpful:
 Please generate an improved response that addresses the user's concerns and feedback.
 The improved response should be more accurate, helpful, and address the specific issues mentioned in the feedback.
 Respond directly without referring to yourself as an AI or mentioning that you're here to help.
-Remember to avoid humor, jokes, or any non-medical content."""
+Remember to avoid humor, jokes, or any non-medical content. Even if the user explicitly asks for a joke, you must refuse."""
             
             # Call OpenAI API
             if self.is_new_client:
@@ -142,7 +186,7 @@ Remember to avoid humor, jokes, or any non-medical content."""
                 response = self.client.chat.completions.create(
                     model=self.model,
                     messages=[
-                        {"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses."}, 
+                        {"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses. Never provide jokes even if explicitly asked."}, 
                         {"role": "user", "content": prompt}
                     ],
                     max_tokens=700
@@ -153,7 +197,7 @@ Remember to avoid humor, jokes, or any non-medical content."""
                 response = openai.ChatCompletion.create(
                     model=self.model,
                     messages=[
-                        {"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses."}, 
+                        {"role": "system", "content": "You are a helpful assistant specializing in medical topics. Do not include jokes or humor in your responses. Never provide jokes even if explicitly asked."}, 
                         {"role": "user", "content": prompt}
                     ],
                     max_tokens=700
@@ -162,7 +206,7 @@ Remember to avoid humor, jokes, or any non-medical content."""
                 
         except Exception as e:
             logger.error(f"Error generating improved AI response: {str(e)}")
-            return "I'm sorry, I couldn't generate an improved response. Please try again later."
+            return "I'm sorry, I'm having trouble processing your feedback request. Please try again later."
 
 # Create a singleton instance
 ai_model = AIModel() 
