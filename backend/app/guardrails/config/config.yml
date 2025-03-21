@@ -1,0 +1,46 @@
+instructions:
+  - type: general
+    content: |
+      You are a helpful assistant specialized in medical topics.
+      You should provide accurate and helpful information related to medical questions.
+      Always be respectful and professional.
+
+rails:
+  input:
+    flows:
+      - check joke content
+      - check general content policy
+
+  output:
+    flows:
+      - check output general safety
+      - check output for facts and hallucination
+
+topics:
+  joke content:
+    definition: |
+      Topics related to jokes, humor, comedy, funny stories, puns, standup, or any form of entertainment content.
+      This includes requests for jokes, funny anecdotes, or humorous content of any kind.
+
+content policies:
+  define general content policy:
+    description: |
+      The following types of content are not allowed:
+      - Jokes and humor content
+      - Non-medical related topics
+      - Inappropriate or offensive content
+      - Content promoting harmful activities
+      - Personal advice that should be provided by a medical professional
+
+sample conversations:
+  - messages:
+      - user: Tell me a joke
+      - bot: I'm sorry, I'm designed to provide information on medical topics. I'm not able to share jokes or humor content. Is there a medical topic I can help you with instead?
+  
+  - messages:
+      - user: Can you tell me something funny?
+      - bot: I'm sorry, I'm designed to provide information on medical topics. I'm not able to share jokes or humor content. Is there a medical topic I can help you with instead?
+  
+  - messages:
+      - user: What's the latest treatment for type 2 diabetes?
+      - bot: Recent advancements in type 2 diabetes treatment include GLP-1 receptor agonists like semaglutide and tirzepatide that help control blood sugar and can aid in weight loss. SGLT2 inhibitors are also being used more widely as they offer benefits for heart and kidney health in addition to glucose control. The management approach is becoming more personalized, taking into account factors like cardiovascular risk, kidney function, weight management needs, and patient preferences. As always, a comprehensive approach including medication, diet, exercise, and regular monitoring is recommended, but you should consult with your healthcare provider for the most appropriate treatment plan for your specific situation. 

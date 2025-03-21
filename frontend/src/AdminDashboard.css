@@ -1,0 +1,177 @@
+.admin-view {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.admin-header {
+  color: #343a40;
+  border-bottom: 3px solid #007bff;
+  padding-bottom: 10px;
+}
+
+/* Download button styling */
+.download-btn {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.download-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+}
+
+/* Improved response modal styling */
+.original-response {
+  background-color: #f8f9fa;
+  border-left: 4px solid #6c757d;
+  position: relative;
+}
+
+.improved-response {
+  background-color: #e8f4ff;
+  border-left: 4px solid #007bff;
+  position: relative;
+}
+
+.fa-spin {
+  animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-view .message {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: flex-start;
+}
+
+.admin-view .message-content {
+  max-width: 100%;
+  margin-left: 15px;
+  flex-grow: 1;
+}
+
+.admin-view .user-message {
+  border-left: 4px solid #007bff;
+}
+
+.admin-view .bot-message {
+  border-left: 4px solid #28a745;
+}
+
+/* Improved response indicator */
+.admin-view .bot-message.is-improved {
+  border-left: 4px solid #17a2b8;
+  background-color: #f0fdff;
+}
+
+.admin-view .is-improved-badge {
+  margin-left: 10px;
+  background-color: #17a2b8;
+}
+
+/* Negative conversation indicator */
+.admin-view .negative-conversation-badge {
+  background-color: #dc3545;
+  margin-left: 10px;
+}
+
+.admin-view .avatar {
+  min-width: 40px;
+}
+
+.admin-view .message-header {
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.admin-view .card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-view .list-group-item.active {
+  background-color: #f8f9fa;
+  color: #212529;
+  border-left: 4px solid #007bff;
+}
+
+.admin-view .list-group-item:hover {
+  background-color: #f1f1f1;
+}
+
+/* Negative conversation styling */
+.admin-view .list-group-item.negative {
+  border-left: 4px solid #dc3545;
+}
+
+.admin-view .list-group-item.negative:hover {
+  background-color: #fff5f5;
+}
+
+/* Rating system styles */
+.admin-view .message-rating {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.admin-view .rated-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-view .rated-message .badge {
+  align-self: flex-start;
+}
+
+.admin-view .rated-message .text-muted {
+  font-style: italic;
+  margin-top: 5px;
+  background-color: #f8f9fa;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border-left: 2px solid #dee2e6;
+}
+
+.admin-view button.outline-success:hover {
+  background-color: #d4edda;
+}
+
+.admin-view button.outline-danger:hover {
+  background-color: #f8d7da;
+}
+
+/* Toast notification styling */
+.z-index-toast {
+  z-index: 9999;
+}
+
+.toast .toast-header.bg-success {
+  color: white;
+}
+
+.toast .toast-body {
+  font-size: 14px;
+} 
